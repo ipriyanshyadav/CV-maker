@@ -4,9 +4,9 @@ const path = require('path');
 
 const app = express();
 app.use(express.json({ limit: '10mb' }));
-app.use(express.static(path.join(__dirname, 'files')));
+app.use(express.static(path.join(__dirname, 'files'), { etag: false, lastModified: false, setHeaders: res => res.setHeader('Cache-Control', 'no-store') }));
 
-app.get('/', (req, res) => res.sendFile(path.join(__dirname, 'files', 'cv_editor.html')));
+app.get('/', (req, res) => { res.setHeader('Cache-Control', 'no-store'); res.sendFile(path.join(__dirname, 'files', 'cv_editor.html')); });
 app.get('/api/health', (req, res) => res.json({ status: 'ok' }));
 
 app.post('/api/export-pdf', async (req, res) => {
